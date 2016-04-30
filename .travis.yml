@@ -8,9 +8,10 @@ before_script:
   - "sh -e /etc/init.d/xvfb start"
   - sleep 3 # give xvfb some time to start
 script:
-  - mvn -Ptravis --fail-at-end verify checkstyle:check
+  - mvn -Ptravis --fail-at-end verify
   - jdk_switcher use oraclejdk8
   - mvn -Ptravis --fail-at-end verify -Declipse.target=neon
+  - mvn -Ptravis package checkstyle:check
 cache:
   directories:
    - $HOME/.m2
