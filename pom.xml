@@ -144,7 +144,7 @@
           <consoleOutput>true</consoleOutput>
           <failOnViolation>true</failOnViolation>
           <violationSeverity>warning</violationSeverity>
-          <sourceDirectories>src</sourceDirectories>
+          <sourceDirectory>src</sourceDirectory>
         </configuration>
       <!--
         <executions>
