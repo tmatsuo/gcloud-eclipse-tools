@@ -1,5 +1,23 @@
 package com.google.cloud.tools.eclipse.appengine.newproject;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.SubMonitor;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.Document;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.templates.DocumentTemplateContext;
+import org.eclipse.jface.text.templates.Template;
+import org.eclipse.jface.text.templates.TemplateBuffer;
+import org.eclipse.jface.text.templates.TemplateContext;
+import org.eclipse.jface.text.templates.TemplateContextType;
+import org.eclipse.jface.text.templates.TemplateException;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -10,15 +28,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.PatternSyntaxException;
-
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.SubMonitor;
 
 public class CodeTemplates {
 
@@ -150,14 +159,21 @@ public class CodeTemplates {
         }
         String template = builder.toString();
         
-        for (Entry<String, String> entry : values.entrySet()) {
-          String token = "\\$\\{" + entry.getKey() + "\\}";
-          template = template.replaceAll(token, entry.getValue());
+        // uncertain of importance of this contextTypeId
+        String contextTypeId = "com.google.cloud.templating.context";
+        TemplateContextType contextType = new TemplateContextType(contextTypeId);
+        Template jtemplate = new Template("", "", contextTypeId, template, true);
+        IDocument document = new Document();
+        TemplateContext context = new DocumentTemplateContext(contextType, document, 0, 0);
+        for (Entry<String, String> mapping : values.entrySet()) {
+          context.setVariable(mapping.getKey(), mapping.getValue());
         }
+        TemplateBuffer buffer = context.evaluate(jtemplate);
+        template = buffer.getString();
         
-        byte[] data = template.getBytes("UTF-8"); 
+        byte[] data = template.getBytes("UTF-8");
         child.create(new ByteArrayInputStream(data), force, monitor);
-      } catch (IOException | PatternSyntaxException ex) {
+      } catch (IOException | PatternSyntaxException | BadLocationException | TemplateException ex) {
         IStatus status = new Status(Status.ERROR, "todo plugin ID", 3, 
             "Could not process template for " + name, null);
         throw new CoreException(status);
