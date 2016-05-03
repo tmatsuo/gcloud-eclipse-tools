@@ -1,7 +1,11 @@
 package com.google.cloud.tools.eclipse.appengine.newproject;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -37,8 +41,8 @@ public class CodeTemplatesTest {
   }
   
   @After
-  public void deleteWorkspace() throws CoreException {
-    // todo how?
+  public void cleanUp() throws CoreException {
+    parent.delete(true, monitor);
   }
   
   @Test
@@ -55,6 +59,20 @@ public class CodeTemplatesTest {
     Assert.assertEquals("web.xml", child.getName());
     InputStream in = child.getContents(true);
     Assert.assertNotEquals("File is empty", -1, in.read());
+  }
+  
+  @Test
+  public void testCreateChildFileWithTemplates() throws CoreException, IOException {
+    Map<String, String> values = new HashMap<>();
+    values.put("Package", "package com.google.foo.bar;");
+    
+    IFile child = CodeTemplates.createChildFile("HelloAppEngine.java", parent, monitor, values);
+    Assert.assertTrue(child.exists());
+    Assert.assertEquals("HelloAppEngine.java", child.getName());
+    InputStream in = child.getContents(true);
+    BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
+    Assert.assertEquals("package com.google.foo.bar;", reader.readLine());
+    Assert.assertEquals("", reader.readLine());
   }
 
 }
