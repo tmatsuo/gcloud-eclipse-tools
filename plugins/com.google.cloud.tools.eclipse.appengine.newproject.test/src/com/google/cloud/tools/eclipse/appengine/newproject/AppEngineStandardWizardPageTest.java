@@ -29,7 +29,7 @@ public class AppEngineStandardWizardPageTest {
   
   @Test
   public void testDescription() {
-    Assert.assertEquals("Create a new App Engine Standard Project in the workspace", 
+    Assert.assertEquals("Create a new App Engine Standard Project in the workspace.", 
         page.getDescription());
   }
 
