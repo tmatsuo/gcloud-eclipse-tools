@@ -131,7 +131,7 @@ class CreateAppEngineStandardWtpProject extends WorkspaceModifyOperation {
 	  org.eclipse.wst.server.core.IRuntime appEngineServerRuntime = appEngineRuntimeWC.save(true, monitor);
 	  IRuntime appEngineFacetRuntime = FacetUtil.getRuntime(appEngineServerRuntime);
 	  if (appEngineFacetRuntime == null) {
-		throw new NullPointerException("Null App Engine facet runtime");
+	    throw new NullPointerException("Null App Engine facet runtime");
 	  }
 
 	  project.addTargetedRuntime(appEngineFacetRuntime, monitor);
