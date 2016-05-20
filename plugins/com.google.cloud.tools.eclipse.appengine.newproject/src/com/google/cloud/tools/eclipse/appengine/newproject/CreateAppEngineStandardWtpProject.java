@@ -124,7 +124,7 @@ class CreateAppEngineStandardWtpProject extends WorkspaceModifyOperation {
       IRuntimeType appEngineRuntimeType =
         ServerCore.findRuntimeType("com.google.cloud.tools.eclipse.gcloud.runtime");
       if (appEngineRuntimeType == null) {
-        throw new NullPointerException("Null App Engine server runtime");
+        throw new NullPointerException("Could not locate App Engine runtime");
       }
 
 	  IRuntimeWorkingCopy appEngineRuntimeWC = appEngineRuntimeType.createRuntime(null, monitor);
