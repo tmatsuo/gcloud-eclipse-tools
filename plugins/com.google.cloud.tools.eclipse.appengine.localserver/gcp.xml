@@ -5,6 +5,15 @@
    
   <target name="deploy.appengine">
     <echo message="TODO: deploy this"/>
+    <jar destfile=${project.working.dir}/${module.name}.war">
+      <zipfileset dir="${module.dir}">
+        <include name="**/*.*"/>
+        <exclude name="**/jsp_servlet/*.class"/>
+        <exclude name="**/*.war"/>
+      </zipfileset>
+      <move file=${project.working.dir}/${module.name}.war"
+            todir="${server.publish.dir}"/>
+    </jar>
   </target>
   
   <target name="undeploy.appengine">
