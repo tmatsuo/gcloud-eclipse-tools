@@ -56,6 +56,7 @@ public class MavenAppEngineStandardWizardPage extends WizardPage implements IWiz
   @Override
   public void createControl(Composite parent) {
     Composite container = new Composite(parent, SWT.NONE);
+    container.setFont(parent.getFont());
     GridLayoutFactory.swtDefaults().numColumns(2).applyTo(container);
 
     createLocationArea(container);
@@ -70,27 +71,32 @@ public class MavenAppEngineStandardWizardPage extends WizardPage implements IWiz
     ModifyListener pageValidator = new PageValidator();
     
     Group locationGroup = new Group(container, SWT.NONE);
+    locationGroup.setFont(container.getFont());
     locationGroup.setText("Location");
     GridDataFactory.fillDefaults().span(2, 1).applyTo(locationGroup);
     GridLayoutFactory.swtDefaults().numColumns(3).applyTo(locationGroup);
 
     useDefaults = new Button(locationGroup, SWT.CHECK);
+    useDefaults.setFont(container.getFont());
     GridDataFactory.defaultsFor(useDefaults).span(3, 1).applyTo(useDefaults);
     useDefaults.setText("Create project in workspace");
     useDefaults.setSelection(true);
 
     Label locationLabel = new Label(locationGroup, SWT.NONE);
     locationLabel.setText("Location:");
+    locationLabel.setFont(container.getFont());
     locationLabel
         .setToolTipText("This location will contain the directory created for the project");
 
     locationField = new Text(locationGroup, SWT.BORDER);
+    locationField.setFont(container.getFont());
     GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false)
         .applyTo(locationField);
     locationField.addModifyListener(pageValidator);
     locationField.setEnabled(false);
 
     locationBrowseButton = new Button(locationGroup, SWT.PUSH);
+    locationBrowseButton.setFont(container.getFont());
     locationBrowseButton.setText("Browse");
     locationBrowseButton.setEnabled(false);
     locationBrowseButton.addSelectionListener(new SelectionAdapter() {
@@ -114,26 +120,33 @@ public class MavenAppEngineStandardWizardPage extends WizardPage implements IWiz
     ModifyListener pageValidator = new PageValidator();
 
     Group mavenCoordinatesGroup = new Group(container, SWT.NONE);
+    mavenCoordinatesGroup.setFont(container.getFont());
     mavenCoordinatesGroup.setText("Maven project coordinates");
     GridDataFactory.defaultsFor(mavenCoordinatesGroup).span(2, 1).applyTo(mavenCoordinatesGroup);
     GridLayoutFactory.swtDefaults().numColumns(2).applyTo(mavenCoordinatesGroup);
 
     Label groupIdLabel = new Label(mavenCoordinatesGroup, SWT.NONE);
+    groupIdLabel.setFont(container.getFont());
     groupIdLabel.setText("Group Id:"); //$NON-NLS-1$
     groupIdField = new Text(mavenCoordinatesGroup, SWT.BORDER);
+    groupIdField.setFont(container.getFont());
     GridDataFactory.defaultsFor(groupIdField).align(SWT.FILL, SWT.CENTER).applyTo(groupIdField);
     groupIdField.addModifyListener(pageValidator);
 
     Label artifactIdLabel = new Label(mavenCoordinatesGroup, SWT.NONE);
+    artifactIdLabel.setFont(container.getFont());
     artifactIdLabel.setText("Artifact Id:"); //$NON-NLS-1$
     artifactIdField = new Text(mavenCoordinatesGroup, SWT.BORDER);
+    artifactIdField.setFont(container.getFont());
     GridDataFactory.defaultsFor(artifactIdField).align(SWT.FILL, SWT.CENTER)
         .applyTo(artifactIdField);
     artifactIdField.addModifyListener(pageValidator);
 
     Label versionLabel = new Label(mavenCoordinatesGroup, SWT.NONE);
+    versionLabel.setFont(container.getFont());
     versionLabel.setText("Version:"); //$NON-NLS-1$
     versionField = new Text(mavenCoordinatesGroup, SWT.BORDER);
+    versionField.setFont(container.getFont());
     versionField.setText(defaultVersion);
     GridDataFactory.defaultsFor(versionField).align(SWT.FILL, SWT.CENTER).applyTo(versionField);
     versionField.addModifyListener(pageValidator);
@@ -145,8 +158,10 @@ public class MavenAppEngineStandardWizardPage extends WizardPage implements IWiz
 
     // Java package name
     Label packageNameLabel = new Label(container, SWT.NONE);
+    packageNameLabel.setFont(container.getFont());
     packageNameLabel.setText("Java package:");
     javaPackageField = new Text(container, SWT.BORDER);
+    javaPackageField.setFont(container.getFont());
     GridData javaPackagePosition = new GridData(GridData.FILL_HORIZONTAL);
     javaPackagePosition.horizontalSpan = 2;
     javaPackageField.setLayoutData(javaPackagePosition);
@@ -154,8 +169,10 @@ public class MavenAppEngineStandardWizardPage extends WizardPage implements IWiz
 
     // App Engine Project ID
     Label projectIdLabel = new Label(container, SWT.NONE);
+    projectIdLabel.setFont(container.getFont());
     projectIdLabel.setText("App Engine Project ID: (optional)");
     projectIdField = new Text(container, SWT.BORDER);
+    projectIdField.setFont(container.getFont());
     GridData projectIdPosition = new GridData(GridData.FILL_HORIZONTAL);
     projectIdPosition.horizontalSpan = 2;
     projectIdField.setLayoutData(projectIdPosition);

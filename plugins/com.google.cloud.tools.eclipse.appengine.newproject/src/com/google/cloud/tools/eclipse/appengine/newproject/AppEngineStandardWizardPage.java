@@ -44,7 +44,9 @@ public class AppEngineStandardWizardPage extends WizardNewProjectCreationPage im
     // Java package name
     Label packageNameLabel = new Label(container, SWT.NONE);
     packageNameLabel.setText("Java package:"); //$NON-NLS-1$
+    packageNameLabel.setFont(parent.getFont());
     javaPackageField = new Text(container, SWT.BORDER);
+    javaPackageField.setFont(parent.getFont());
     GridData javaPackagePosition = new GridData(GridData.FILL_HORIZONTAL);
     javaPackagePosition.horizontalSpan = 2;
     javaPackageField.setLayoutData(javaPackagePosition);
@@ -52,8 +54,10 @@ public class AppEngineStandardWizardPage extends WizardNewProjectCreationPage im
     
     // App Engine Project ID
     Label projectIdLabel = new Label(container, SWT.NONE);
+    projectIdLabel.setFont(parent.getFont());
     projectIdLabel.setText("App Engine Project ID: (optional)"); //$NON-NLS-1$
     projectIdField = new Text(container, SWT.BORDER);
+    projectIdField.setFont(parent.getFont());
     GridData projectIdPosition = new GridData(GridData.FILL_HORIZONTAL);
     projectIdPosition.horizontalSpan = 2;
     projectIdField.setLayoutData(projectIdPosition);
