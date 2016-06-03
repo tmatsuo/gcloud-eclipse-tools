@@ -1,7 +1,7 @@
 sudo: false
 language: java
 jdk:
-  - openjdk7
+  - oraclejdk8
 install: mvn -N io.takari:maven:wrapper -Dmaven=3.3.9
 before_script:
   - "export DISPLAY=:99.0"
@@ -9,7 +9,6 @@ before_script:
   - sleep 3 # give xvfb some time to start
 script:
   - ./mvnw -Ptravis --fail-at-end verify
-  - jdk_switcher use oraclejdk8
   - ./mvnw -Ptravis --fail-at-end verify -Declipse.target=neon
 cache:  
   directories:
