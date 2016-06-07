@@ -139,18 +139,6 @@
     <runtimeFacetMapping runtimeTypeId="com.google.cloud.tools.eclipse.runtime.id1"
         runtime-component="com.google.cloud.tools.eclipse.runtime.id" version="1"/>
    </extension>
-   <extension
-         point="org.eclipse.m2e.core.projectConfigurators">
-      <configurator
-            class="com.google.cloud.tools.eclipse.appengine.localserver.facet.CloudSdkProjectConfigurator"
-            id="com.google.cloud.tools.eclipse.maven.cloudSdkConfigurator"
-            name="%configurator.name"
-            secondaryTo="org.maven.ide.eclipse.configuration.wtp.configurator">
-      </configurator>
-   </extension>
-   <extension
-         point="org.eclipse.m2e.core.lifecycleMappingMetadataSource">
-   </extension>
 
    <extension
          point="org.eclipse.wst.server.core.serverTypes">
