@@ -6,10 +6,10 @@
    <extension point="org.eclipse.wst.server.core.runtimeTypes">
       <runtimeType
             class="org.eclipse.jst.server.generic.core.internal.GenericServerRuntime"
-            description="App Engine (Generic Server Framework)"
+            description="%gsfServerTypeName"
             id="com.google.cloud.tools.eclipse.gcloud.runtime"
-            name="App Engine (Generic Server Framework)"
-            vendor="Google"
+            name="%gsfRuntimeTypeName"
+            vendor="%runtimeTypeVendor"
             vendorId="google"
             version="0.1.0">
          <moduleType
@@ -29,7 +29,7 @@
             initialState="stopped"
             launchModes="run,debug"
             launchConfigId="org.eclipse.jst.server.generic.core.ExternalLaunchConfigurationType"
-            name="App Engine Standard (Generic Server Framework)"
+            name="%gsfServerTypeName"
             runtime="true"
             runtimeTypeId="com.google.cloud.tools.eclipse.gcloud.runtime"
             startBeforePublish="true"
@@ -192,7 +192,7 @@
             initialState="stopped"
             launchConfigId="com.google.cloud.tools.eclipse.CloudSdkLaunchConfigurationType"
             launchModes="run,debug,profile"
-            name="%serverTypeName"
+            name="%customServerTypeName"
             runtime="true"
             runtimeTypeId="com.google.cloud.tools.eclipse.runtime.id1"
             startBeforePublish="false"
@@ -205,7 +205,7 @@
             delegate="com.google.cloud.tools.eclipse.appengine.localserver.server.CloudSdkLaunchConfigurationDelegate"
             id="com.google.cloud.tools.eclipse.CloudSdkLaunchConfigurationType"
             modes="run, debug, profile"
-            name="%serverTypeName">
+            name="%customServerTypeName">
       </launchConfigurationType>
    </extension>
    <extension
