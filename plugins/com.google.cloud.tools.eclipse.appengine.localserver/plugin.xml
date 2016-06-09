@@ -29,7 +29,7 @@
             initialState="stopped"
             launchModes="run,debug"
             launchConfigId="org.eclipse.jst.server.generic.core.ExternalLaunchConfigurationType"
-            name="App Engine Server (Generic Server Framework)"
+            name="App Engine Standard (Generic Server Framework)"
             runtime="true"
             runtimeTypeId="com.google.cloud.tools.eclipse.gcloud.runtime"
             startBeforePublish="true"
