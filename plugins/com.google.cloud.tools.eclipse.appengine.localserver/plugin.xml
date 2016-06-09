@@ -6,7 +6,7 @@
    <extension point="org.eclipse.wst.server.core.runtimeTypes">
       <runtimeType
             class="org.eclipse.jst.server.generic.core.internal.GenericServerRuntime"
-            description="GCloud based App Engine runtime"
+            description="App Engine (Generic Server Framework)"
             id="com.google.cloud.tools.eclipse.gcloud.runtime"
             name="App Engine"
             vendor="Google"
