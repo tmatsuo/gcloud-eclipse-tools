@@ -20,6 +20,7 @@
   <bundle id="org.eclipse.jetty.servlet" version="0.0.0"/>
   <bundle id="org.eclipse.jetty.server" version="0.0.0"/>
   <bundle id="org.eclipse.jetty.util" version="0.0.0"/>
+  <bundle id="org.eclipse.m2e.maven.runtime.slf4j.simple" version="0.0.0"/>
 
   <bundle id="org.hamcrest" version="1.1.0.v20090501071000" />
   <bundle id="com.google.guava" version="17.0" />
