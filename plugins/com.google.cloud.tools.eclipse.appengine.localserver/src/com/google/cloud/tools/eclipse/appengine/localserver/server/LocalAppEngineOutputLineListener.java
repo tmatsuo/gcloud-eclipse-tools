@@ -8,11 +8,11 @@ public class LocalAppEngineOutputLineListener implements ProcessOutputLineListen
   private MessageConsoleStream stream;
 
   public LocalAppEngineOutputLineListener (MessageConsoleStream stream) {
-	this.stream = stream;
+    this.stream = stream;
   }
 
   @Override
   public void onOutputLine(String arg0) {
-	stream.println(arg0);
+    stream.println(arg0);
   }
 }
