@@ -10,23 +10,23 @@ import org.eclipse.wst.server.core.model.PublishTaskDelegate;
 import com.google.common.collect.Lists;
 
 public class LocalAppEnginePublishTaskDelegate extends PublishTaskDelegate {
-	  @Override
-	  @SuppressWarnings("rawtypes")
-	  public PublishOperation[] getTasks(IServer server, int kind, List/* <IModule[]> */ modules,
-	      List/* <Integer> */ kindList) {
-	    if (modules == null || modules.isEmpty()) {
-	      return null;
-	    }
+	@Override
+	@SuppressWarnings("rawtypes")
+	public PublishOperation[] getTasks(IServer server, int kind, List/* <IModule[]> */ modules,
+			List/* <Integer> */ kindList) {
+		if (modules == null || modules.isEmpty()) {
+			return null;
+		}
 
-	    LocalAppEngineServerBehaviour gaeServer =
-	        (LocalAppEngineServerBehaviour) server.loadAdapter(LocalAppEngineServerBehaviour.class, null);
+		LocalAppEngineServerBehaviour gaeServer =
+				(LocalAppEngineServerBehaviour) server.loadAdapter(LocalAppEngineServerBehaviour.class, null);
 
-	    List<PublishOperation> tasks = Lists.newArrayList();
-	    for (int i = 0; i < modules.size(); i++) {
-	      IModule[] module = (IModule[]) modules.get(i);
-	      tasks.add(new LocalAppEnginePublishOperation(gaeServer, kind, module, (Integer) kindList.get(i)));
-	    }
+		List<PublishOperation> tasks = Lists.newArrayList();
+		for (int i = 0; i < modules.size(); i++) {
+			IModule[] module = (IModule[]) modules.get(i);
+			tasks.add(new LocalAppEnginePublishOperation(gaeServer, kind, module, (Integer) kindList.get(i)));
+		}
 
-	    return tasks.toArray(new PublishOperation[tasks.size()]);
-	  }
+		return tasks.toArray(new PublishOperation[tasks.size()]);
+	}
 }
