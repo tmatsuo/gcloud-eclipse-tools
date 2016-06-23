@@ -23,8 +23,7 @@ public class LocalAppEngineServerDelegate extends ServerDelegate {
   public static LocalAppEngineServerDelegate getAppEngineServer(IServer server) {
     LocalAppEngineServerDelegate appEngineServer = server.getAdapter(LocalAppEngineServerDelegate.class);
     if (appEngineServer == null) {
-      appEngineServer = (LocalAppEngineServerDelegate) server.loadAdapter(LocalAppEngineServerDelegate.class,
-          new NullProgressMonitor());
+      appEngineServer = (LocalAppEngineServerDelegate) server.loadAdapter(LocalAppEngineServerDelegate.class, null);
     }
     return appEngineServer;
   }
