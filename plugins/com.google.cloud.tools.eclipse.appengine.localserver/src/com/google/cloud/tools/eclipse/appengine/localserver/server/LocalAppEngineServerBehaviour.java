@@ -97,6 +97,7 @@ public class LocalAppEngineServerBehaviour extends ServerBehaviourDelegate {
         .addStdErrLineListener(outputListener)
         .startListener(localAppEngineStartListener)
         .exitListener(localAppEngineExitListener)
+        .async(true)
         .build();
     devServer = new CloudSdkAppEngineDevServer(cloudSdk);
     DefaultRunConfiguration devServerRunConfiguration = new DefaultRunConfiguration();
