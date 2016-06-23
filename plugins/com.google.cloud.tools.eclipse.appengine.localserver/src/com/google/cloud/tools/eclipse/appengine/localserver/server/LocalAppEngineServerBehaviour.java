@@ -77,7 +77,7 @@ public class LocalAppEngineServerBehaviour extends ServerBehaviourDelegate {
   /**
    * Convenience accessor to protected member in superclass.
    */
-  public void setModulePublishState2(IModule[] module, int state) {
+  public final void setModulePublishState2(IModule[] module, int state) {
     setModulePublishState(module, state);
   }
 
