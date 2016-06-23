@@ -7,12 +7,12 @@ import com.google.cloud.tools.appengine.cloudsdk.process.ProcessOutputLineListen
 public class LocalAppEngineOutputLineListener implements ProcessOutputLineListener {
   private MessageConsoleStream stream;
 
-  public LocalAppEngineOutputLineListener (MessageConsoleStream stream) {
+  public LocalAppEngineOutputLineListener(MessageConsoleStream stream) {
     this.stream = stream;
   }
 
   @Override
-  public void onOutputLine(String arg0) {
-    stream.println(arg0);
+  public void onOutputLine(String line) {
+    stream.println(line);
   }
 }

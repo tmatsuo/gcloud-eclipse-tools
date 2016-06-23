@@ -40,7 +40,6 @@ public class LocalAppEngineServerBehaviour extends ServerBehaviourDelegate {
   @Override
   public void stop(boolean force) {
     setServerState(IServer.STATE_STOPPING);
-    // stop server
     terminate();
     setServerState(IServer.STATE_STOPPED);    
   }
@@ -82,9 +81,13 @@ public class LocalAppEngineServerBehaviour extends ServerBehaviourDelegate {
     setModulePublishState(module, state);
   }
 
+  /**
+   * Starts the development server.
+   * @param runnables The path to directories that contain configuration files like appengine-web.xml
+   * @param stream
+   */
   void startDevServer(List<File> runnables, MessageConsoleStream stream) {
     setServerState(IServer.STATE_STARTING);
-
     LocalAppEngineOutputLineListener outputListener =
         new LocalAppEngineOutputLineListener(stream);
 
@@ -106,8 +109,8 @@ public class LocalAppEngineServerBehaviour extends ServerBehaviourDelegate {
     // Run server
     try {
       devServer.run(devServerRunConfiguration);
-      //setServerState(IServer.STATE_STARTED);
     } catch (AppEngineException ex) {
+      Activator.logError("Error starting server: " + ex.getMessage());
       stop(true);
     }
   }
