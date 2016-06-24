@@ -3,16 +3,12 @@ package com.google.cloud.tools.eclipse.appengine.localserver.server;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Properties;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.jst.server.core.IJ2EEModule;
-import org.eclipse.jst.server.core.IWebModule;
 import org.eclipse.wst.server.core.IModule;
 import org.eclipse.wst.server.core.IServer;
 import org.eclipse.wst.server.core.model.IModuleResource;
@@ -82,96 +78,9 @@ public class LocalAppEnginePublishOperation extends PublishOperation {
   public void execute(IProgressMonitor monitor, IAdaptable info) throws CoreException {
     List<IStatus> statusList = Lists.newArrayList();
     IPath deployPath = server.getModuleDeployDirectory(modules[0]);
-    if (modules.length == 1) {
-      // root modules
-      publishDirectory(deployPath, statusList, monitor);
-    } else {
-      // TODO: Why and when does this code happen?
-      for (int i = 0; i < modules.length - 1; i++) {
-        IWebModule webModule = (IWebModule) modules[i].loadAdapter(IWebModule.class, monitor);
-        if (webModule == null) {
-          statusList.add(newErrorStatus("Not a Web module: " + modules[i].getName()));
-          return;
-        }
-        String uri = webModule.getURI(modules[i + 1]);
-        if (uri != null) {
-          deployPath = deployPath.append(uri);
-        } else {
-          // no uri is OK for removed modules
-          if (deltaKind != ServerBehaviourDelegate.REMOVED) {
-            statusList.add(newErrorStatus("Cannot get URI for module: " + modules[i + 1].getName()));
-            return;
-          }
-        }
-      }
-
-      // modules given as parent-child chain
-      // get last one, the prior modules should already be published
-      IModule childModule = modules[modules.length - 1];
-      Properties moduleUrls = new Properties();
-
-      // get as j2ee
-      IJ2EEModule childJ2EEModule = (IJ2EEModule) childModule.loadAdapter(IJ2EEModule.class, monitor);
-      if (childJ2EEModule != null && childJ2EEModule.isBinary()) {
-        publishArchiveModule(deployPath, moduleUrls, statusList, monitor, childModule);
-      } else {
-        publishDir(deployPath, moduleUrls, statusList, monitor, childModule);
-      }
-    }
+    publishDirectory(deployPath, statusList, monitor);
     checkStatuses(statusList);
     server.setModulePublishState2(modules, IServer.PUBLISH_STATE_NONE);
-  }
-
-  private IStatus newErrorStatus(String message) {
-    return new Status(IStatus.ERROR, getClass().getName(), message);
-  }
-
-  /**
-   * Publish as binary modules.
-   */
-  private void publishArchiveModule(IPath path, Properties properties, List<IStatus> statusList,
-      IProgressMonitor monitor, IModule childModule) {
-    boolean isMoving = false;
-    // check older publish
-    String oldPath = (String) properties.get(childModule.getId());
-    String jarPath = path.toOSString();
-    if (oldPath != null && jarPath != null) {
-      isMoving = !oldPath.equals(jarPath);
-    }
-    // setup target
-    IPath clonedJarPath = (IPath) path.clone();
-    IPath deployPath = clonedJarPath.removeLastSegments(1);
-    // remove if requested or if previously published and are now serving
-    // without publishing
-    if (isMoving || kind == IServer.PUBLISH_CLEAN || deltaKind == ServerBehaviourDelegate.REMOVED) {
-      if (oldPath != null) {
-        File file = new File(oldPath);
-        if (file.exists()) {
-          file.delete();
-        }
-      }
-      properties.remove(childModule.getId());
-      if (deltaKind == ServerBehaviourDelegate.REMOVED) {
-        return;
-      }
-    }
-    // check for changes
-    if (!isMoving && kind != IServer.PUBLISH_CLEAN && kind != IServer.PUBLISH_FULL) {
-      IModuleResourceDelta[] delta = server.getPublishedResourceDelta(modules);
-      if (delta == null || delta.length == 0) {
-        return;
-      }
-    }
-    // ensure target directory
-    if (!deployPath.toFile().exists()) {
-      deployPath.toFile().mkdirs();
-    }
-    // do publish
-    IModuleResource[] resources = server.getResources(modules);
-    IStatus[] publishStatus = helper.publishToPath(resources, clonedJarPath, monitor);
-    statusList.addAll(Arrays.asList(publishStatus));
-    // store into mapping
-    properties.put(childModule.getId(), jarPath);
   }
 
   /**
@@ -203,63 +112,6 @@ public class LocalAppEnginePublishOperation extends PublishOperation {
       IStatus[] publishStatus = helper.publishDelta(delta, path, monitor);
       statusList.addAll(Arrays.asList(publishStatus));
     }
-  }
-
-  /**
-   * Publish child modules as directory if not binary.
-   */
-  private void publishDir(IPath path, Properties properties, List<IStatus> statusList, IProgressMonitor monitor,
-      IModule childModule) throws CoreException {
-    boolean isMoving = false;
-    // check older publish
-    String oldPath = (String) properties.get(childModule.getId());
-    String dirPath = path.toOSString();
-    if (oldPath != null && dirPath != null) {
-      isMoving = !oldPath.equals(dirPath);
-    }
-    // setup target
-    IPath clonedDirPath = (IPath) path.clone();
-    // remove if needed
-    if (isMoving || kind == IServer.PUBLISH_CLEAN || deltaKind == ServerBehaviourDelegate.REMOVED) {
-      if (oldPath != null) {
-        File file = new File(oldPath);
-        if (file.exists()) {
-          IStatus[] status = PublishHelper.deleteDirectory(file, monitor);
-          statusList.addAll(Arrays.asList(status));
-        }
-      }
-      properties.remove(childModule.getId());
-      if (deltaKind == ServerBehaviourDelegate.REMOVED) {
-        return;
-      }
-    }
-    // check for changes
-    if (!isMoving && kind != IServer.PUBLISH_CLEAN && kind != IServer.PUBLISH_FULL) {
-      IModuleResourceDelta[] delta = server.getPublishedResourceDelta(modules);
-      if (delta == null || delta.length == 0) {
-        return;
-      }
-    }
-    // ensure directory exists
-    if (!clonedDirPath.toFile().exists()) {
-      clonedDirPath.toFile().mkdirs();
-    }
-    // do publish resources
-    // republish or publish fully
-    if (kind == IServer.PUBLISH_CLEAN || kind == IServer.PUBLISH_FULL) {
-      IModuleResource[] resources = server.getResources(modules);
-      IStatus[] publishStatus = helper.publishFull(resources, clonedDirPath, monitor);
-      statusList.addAll(Arrays.asList(publishStatus));
-    } else {
-      // publish changes only
-      IModuleResourceDelta[] deltas = server.getPublishedResourceDelta(modules);
-      for (IModuleResourceDelta delta : deltas) {
-        IStatus[] publishStatus = helper.publishDelta(delta, clonedDirPath, monitor);
-        statusList.addAll(Arrays.asList(publishStatus));
-      }
-    }
-    // store into mapping
-    properties.put(childModule.getId(), dirPath);
   }
 
 }
