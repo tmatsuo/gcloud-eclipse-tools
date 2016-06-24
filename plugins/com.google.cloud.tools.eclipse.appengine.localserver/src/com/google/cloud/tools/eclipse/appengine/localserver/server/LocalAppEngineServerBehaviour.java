@@ -83,8 +83,8 @@ public class LocalAppEngineServerBehaviour extends ServerBehaviourDelegate {
 
   /**
    * Starts the development server.
-   * @param runnables The path to directories that contain configuration files like appengine-web.xml
-   * @param stream
+   * @param runnables the path to directories that contain configuration files like appengine-web.xml
+   * @param stream the stream to send development server process output to
    */
   void startDevServer(List<File> runnables, MessageConsoleStream stream) {
     setServerState(IServer.STATE_STARTING);
