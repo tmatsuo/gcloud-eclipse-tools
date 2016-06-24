@@ -32,9 +32,6 @@ public class LocalAppEnginePublishOperation extends PublishOperation {
     if (statusList == null || statusList.isEmpty()) {
       return;
     }
-    if (statusList.size() == 1) {
-      throw new CoreException(statusList.get(0));
-    }
     IStatus[] children = statusList.toArray(new IStatus[statusList.size()]);
     throw new CoreException(new MultiStatus(PLUGIN_ID, 0, children, "Error during publish operation", null));
   }
