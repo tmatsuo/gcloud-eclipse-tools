@@ -112,7 +112,7 @@ public class LocalAppEngineServerBehaviour extends ServerBehaviourDelegate {
 
     if ((mode != null) && mode.equals(ILaunchManager.DEBUG_MODE)) {
       if (debugPort <= 0 || debugPort > 65535) {
-        throw new IllegalStateException("Debug port is set to " + debugPort
+        throw new IllegalArgumentException("Debug port is set to " + debugPort
                                         + ", should be between 1-65535");
       }
       jvmFlags.add("-Xdebug");

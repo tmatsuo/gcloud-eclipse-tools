@@ -59,11 +59,10 @@ extends AbstractJavaLaunchConfigurationDelegate {
     LocalAppEngineServerDelegate serverDelegate = LocalAppEngineServerDelegate.getAppEngineServer(server);
     int debugPort = -1;
     if (ILaunchManager.DEBUG_MODE.equals(mode)) {
-      final int port = getDebugPort();
-      debugPort = port;
+      debugPort = getDebugPort();
 
       try {
-        runDebugTarget(serverDelegate, modules[0].getProject().getName(), port);
+        runDebugTarget(serverDelegate, modules[0].getProject().getName(), debugPort);
       } catch (CoreException e) {
         Activator.logError(e);
       }
