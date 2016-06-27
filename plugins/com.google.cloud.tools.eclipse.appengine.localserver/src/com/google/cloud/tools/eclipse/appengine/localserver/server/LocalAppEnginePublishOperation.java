@@ -28,7 +28,7 @@ public class LocalAppEnginePublishOperation extends PublishOperation {
   /**
    * @throws {@link CoreException} if status list is not empty
    */
-  private static void checkStatuses(List<IStatus> statusList) throws CoreException {
+  private static void failOnError(List<IStatus> statusList) throws CoreException {
     if (statusList == null || statusList.isEmpty()) {
       return;
     }
@@ -76,7 +76,7 @@ public class LocalAppEnginePublishOperation extends PublishOperation {
     List<IStatus> statusList = Lists.newArrayList();
     IPath deployPath = server.getModuleDeployDirectory(modules[0]);
     publishDirectory(deployPath, statusList, monitor);
-    checkStatuses(statusList);
+    failOnError(statusList);
     server.setModulePublishState2(modules, IServer.PUBLISH_STATE_NONE);
   }
 

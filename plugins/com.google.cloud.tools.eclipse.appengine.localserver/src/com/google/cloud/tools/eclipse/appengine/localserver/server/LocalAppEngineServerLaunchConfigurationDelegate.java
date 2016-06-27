@@ -41,8 +41,8 @@ extends AbstractJavaLaunchConfigurationDelegate {
     }
 
     MessageConsole console = TargetPlatform.findConsole(configuration.getName());
-    TargetPlatform.showConsole(console);
     console.clearConsole();
+    TargetPlatform.showConsole(console);
 
     // Start server
     serverBehaviour.startDevServer(runnables, console.newMessageStream());
