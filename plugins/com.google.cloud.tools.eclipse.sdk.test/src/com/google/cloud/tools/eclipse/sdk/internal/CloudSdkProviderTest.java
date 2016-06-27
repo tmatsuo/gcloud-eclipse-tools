@@ -126,7 +126,6 @@ public class CloudSdkProviderTest {
 
     @Override
     public long getLong(String name) {
-      // TODO Auto-generated method stub
       return 0;
     }
 
@@ -137,7 +136,6 @@ public class CloudSdkProviderTest {
 
     @Override
     public boolean isDefault(String name) {
-      // TODO Auto-generated method stub
       return false;
     }
 
