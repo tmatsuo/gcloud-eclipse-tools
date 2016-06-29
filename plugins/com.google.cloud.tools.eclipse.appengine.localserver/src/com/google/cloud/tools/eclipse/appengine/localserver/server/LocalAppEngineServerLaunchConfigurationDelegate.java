@@ -9,6 +9,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
@@ -40,6 +41,13 @@ extends AbstractJavaLaunchConfigurationDelegate {
     IModule[] modules = server.getModules();
     if (modules == null || modules.length == 0) {
       return;
+    }
+
+    // App Engine dev server can only debug one module at a time
+    if (mode.equals(ILaunchManager.DEBUG_MODE) && modules.length > 1) {
+      String message = "The App Engine development server supports only 1 module when running in debug mode";
+      Status status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, message);
+      throw new CoreException(status);
     }
 
     LocalAppEngineServerBehaviour serverBehaviour =
