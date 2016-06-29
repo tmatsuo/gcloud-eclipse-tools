@@ -68,7 +68,12 @@ extends AbstractJavaLaunchConfigurationDelegate {
     }
 
     // Start server
-    serverBehaviour.startDevServer(runnables, console.newMessageStream(), mode, debugPort);
+    if (mode.equals(ILaunchManager.DEBUG_MODE)) {
+      serverBehaviour.startDebugDevServer(runnables, console.newMessageStream(), debugPort);
+    } else {
+      serverBehaviour.startDevServer(runnables, console.newMessageStream());
+    }
+
   }
 
   private void runDebugTarget(LocalAppEngineServerDelegate serverDelegate, String projectName, int port)

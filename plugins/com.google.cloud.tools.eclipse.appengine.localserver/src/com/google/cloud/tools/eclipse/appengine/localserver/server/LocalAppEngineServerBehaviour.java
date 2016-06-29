@@ -2,6 +2,7 @@ package com.google.cloud.tools.eclipse.appengine.localserver.server;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.debug.core.ILaunchManager;
@@ -82,25 +83,45 @@ public class LocalAppEngineServerBehaviour extends ServerBehaviourDelegate {
 
   /**
    * Starts the development server.
-   * @param runnables the path to configuration files and/or directories that contain configuration files 
+   * @param runnables the path to configuration files and/or directories that contain configuration files
    * @param stream the stream to send development server process output to
-   * @param mode the mode of the server launch defined by ILaunchManager - RUN_MODE or DEBUG_MODE
-   * @param debugPort the port to attach a debugger to if launch is in debug mode
    */
-  void startDevServer(List<File> runnables, MessageConsoleStream stream, String mode, int debugPort) {
+  void startDevServer(List<File> runnables, MessageConsoleStream stream) {
     setServerState(IServer.STATE_STARTING);
-    LocalAppEngineOutputLineListener outputListener =
-        new LocalAppEngineOutputLineListener(stream);
 
     // Create dev app server instance
-    CloudSdk cloudSdk = new CloudSdk.Builder()
-        .addStdOutLineListener(outputListener)
-        .addStdErrLineListener(outputListener)
-        .startListener(localAppEngineStartListener)
-        .exitListener(localAppEngineExitListener)
-        .async(true)
-        .build();
-    devServer = new CloudSdkAppEngineDevServer(cloudSdk);
+    initializeDevServer(stream);
+
+    // Create run configuration
+    DefaultRunConfiguration devServerRunConfiguration = new DefaultRunConfiguration();
+    devServerRunConfiguration.setAppYamls(runnables);
+
+    // FIXME: workaround bug when running on a Java8 JVM
+    // https://github.com/GoogleCloudPlatform/gcloud-eclipse-tools/issues/181
+    devServerRunConfiguration.setJvmFlags(Arrays.asList("-Dappengine.user.timezone=UTC"));
+
+    // Run server
+    try {
+      devServer.run(devServerRunConfiguration);
+    } catch (AppEngineException ex) {
+      Activator.logError("Error starting server: " + ex.getMessage());
+      stop(true);
+    }
+  }
+
+  /**
+   * Starts the development server in debug mode.
+   * @param runnables the path to configuration files and/or directories that contain configuration files
+   * @param stream the stream to send development server process output to
+   * @param debugPort the port to attach a debugger to if launch is in debug mode
+   */
+  void startDebugDevServer(List<File> runnables, MessageConsoleStream stream, int debugPort) {
+    setServerState(IServer.STATE_STARTING);
+
+    // Create dev app server instance
+    initializeDevServer(stream);
+
+    // Create run configuration
     DefaultRunConfiguration devServerRunConfiguration = new DefaultRunConfiguration();
     devServerRunConfiguration.setAppYamls(runnables);
 
@@ -109,14 +130,12 @@ public class LocalAppEngineServerBehaviour extends ServerBehaviourDelegate {
     // https://github.com/GoogleCloudPlatform/gcloud-eclipse-tools/issues/181
     jvmFlags.add("-Dappengine.user.timezone=UTC");
 
-    if ((mode != null) && mode.equals(ILaunchManager.DEBUG_MODE)) {
-      if (debugPort <= 0 || debugPort > 65535) {
-        throw new IllegalArgumentException("Debug port is set to " + debugPort
-                                        + ", should be between 1-65535");
-      }
-      jvmFlags.add("-Xdebug");
-      jvmFlags.add("-Xrunjdwp:transport=dt_socket,server=n,suspend=y,quiet=y,address=" + debugPort);
+    if (debugPort <= 0 || debugPort > 65535) {
+      throw new IllegalArgumentException("Debug port is set to " + debugPort
+                                      + ", should be between 1-65535");
     }
+    jvmFlags.add("-Xdebug");
+    jvmFlags.add("-Xrunjdwp:transport=dt_socket,server=n,suspend=y,quiet=y,address=" + debugPort);
     devServerRunConfiguration.setJvmFlags(jvmFlags);
 
     // Run server
@@ -126,6 +145,21 @@ public class LocalAppEngineServerBehaviour extends ServerBehaviourDelegate {
       Activator.logError("Error starting server: " + ex.getMessage());
       stop(true);
     }
+  }
+
+  private void initializeDevServer(MessageConsoleStream stream) {
+    LocalAppEngineOutputLineListener outputListener =
+        new LocalAppEngineOutputLineListener(stream);
+
+    CloudSdk cloudSdk = new CloudSdk.Builder()
+        .addStdOutLineListener(outputListener)
+        .addStdErrLineListener(outputListener)
+        .startListener(localAppEngineStartListener)
+        .exitListener(localAppEngineExitListener)
+        .async(true)
+        .build();
+
+    devServer = new CloudSdkAppEngineDevServer(cloudSdk);
   }
 
   private void terminate() {
