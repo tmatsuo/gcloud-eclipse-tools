@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -53,8 +52,8 @@ extends AbstractJavaLaunchConfigurationDelegate {
     }
 
     MessageConsole console = TargetPlatform.findConsole(configuration.getName());
-    TargetPlatform.showConsole(console);
     console.clearConsole();
+    TargetPlatform.showConsole(console);
 
     LocalAppEngineServerDelegate serverDelegate = LocalAppEngineServerDelegate.getAppEngineServer(server);
     int debugPort = -1;

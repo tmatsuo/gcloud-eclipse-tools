@@ -3,7 +3,6 @@ package com.google.cloud.tools.eclipse.appengine.localserver.server;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.ui.console.MessageConsoleStream;
@@ -131,6 +130,7 @@ public class LocalAppEngineServerBehaviour extends ServerBehaviourDelegate {
 
   private void terminate() {
     if (devServer != null) {
+      // TODO: when available configure the host and port specified in the server
       DefaultStopConfiguration stopConfig = new DefaultStopConfiguration();
       try {
         devServer.stop(stopConfig);
@@ -161,5 +161,4 @@ public class LocalAppEngineServerBehaviour extends ServerBehaviourDelegate {
       setServerState(IServer.STATE_STARTED);
     }
   }
-
 }

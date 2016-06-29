@@ -6,9 +6,7 @@ import org.eclipse.wst.server.core.IModule;
 import org.junit.Assert;
 import org.junit.Test;
 
-
 public class LocalAppEngineServerDelegateTest {
-
   private LocalAppEngineServerDelegate delegate = new LocalAppEngineServerDelegate();
   
   @Test
@@ -17,5 +15,4 @@ public class LocalAppEngineServerDelegateTest {
     IModule[] add = new IModule[0];
     Assert.assertEquals(Status.OK_STATUS, delegate.canModifyModules(add, remove));
   }
-
 }

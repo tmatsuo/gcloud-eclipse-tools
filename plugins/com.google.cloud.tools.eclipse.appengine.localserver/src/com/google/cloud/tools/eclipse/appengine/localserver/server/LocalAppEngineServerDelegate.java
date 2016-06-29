@@ -2,7 +2,6 @@ package com.google.cloud.tools.eclipse.appengine.localserver.server;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -62,7 +61,7 @@ public class LocalAppEngineServerDelegate extends ServerDelegate {
   @Override
   public IModule[] getChildModules(IModule[] module) {
     if ((module != null) && (module[0] != null) && (module[0].getModuleType() != null)) {
-      IModule thisModule = module[module.length - 1];
+      IModule thisModule = module[0];
       IModuleType moduleType = thisModule.getModuleType();
       if (moduleType != null && SERVLET_MODULE_FACET.equals(moduleType.getId())) { //$NON-NLS-1$
         IWebModule webModule = (IWebModule) thisModule.loadAdapter(IWebModule.class, null);
