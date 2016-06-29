@@ -32,12 +32,12 @@ extends AbstractJavaLaunchConfigurationDelegate {
   @Override
   public void launch(ILaunchConfiguration configuration, String mode, ILaunch launch,
       IProgressMonitor monitor) throws CoreException {
-    final IServer server = ServerUtil.getServer(configuration);
+    IServer server = ServerUtil.getServer(configuration);
     if (server == null) {
       return;
     }
 
-    final IModule[] modules = server.getModules();
+    IModule[] modules = server.getModules();
     if (modules == null || modules.length == 0) {
       return;
     }
@@ -73,7 +73,6 @@ extends AbstractJavaLaunchConfigurationDelegate {
     } else {
       serverBehaviour.startDevServer(runnables, console.newMessageStream());
     }
-
   }
 
   private void runDebugTarget(LocalAppEngineServerDelegate serverDelegate, String projectName, int port)
@@ -85,11 +84,11 @@ extends AbstractJavaLaunchConfigurationDelegate {
   }
 
   private ILaunchConfigurationWorkingCopy createRemoteDebugLaunchConfiguration(LocalAppEngineServerDelegate serverDelegate,
-      final String projectName, final String port) throws CoreException {
+      String projectName, String port) throws CoreException {
     ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
     ILaunchConfigurationType type = manager.getLaunchConfigurationType(IJavaLaunchConfigurationConstants.ID_REMOTE_JAVA_APPLICATION);
 
-    final ILaunchConfigurationWorkingCopy remoteDebugConfig = type.newInstance(null,
+    ILaunchConfigurationWorkingCopy remoteDebugConfig = type.newInstance(null,
         "Remote debugger for "
             + projectName
             + " ("
