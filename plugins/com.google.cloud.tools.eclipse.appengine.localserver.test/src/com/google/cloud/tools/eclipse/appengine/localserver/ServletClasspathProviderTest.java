@@ -23,7 +23,8 @@ public class ServletClasspathProviderTest {
   public void testResolveClasspathContainer_mavenProject() throws CoreException {
     IProject project = Mockito.mock(IProject.class);
     Mockito.when(project.hasNature("org.eclipse.m2e.core.maven2Nature")).thenReturn(true);
-    IClasspathEntry[] result = provider.resolveClasspathContainer(project , null);
+    Mockito.when(project.isAccessible()).thenReturn(true);
+    IClasspathEntry[] result = provider.resolveClasspathContainer(project, null);
     Assert.assertEquals(0, result.length);
   }
 
