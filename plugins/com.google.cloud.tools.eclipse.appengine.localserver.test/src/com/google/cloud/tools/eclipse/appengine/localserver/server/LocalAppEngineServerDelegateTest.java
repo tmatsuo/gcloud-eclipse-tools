@@ -66,15 +66,10 @@ public class LocalAppEngineServerDelegateTest {
   }
 
   @Test
-  public void testGetRootModules() {
+  public void testGetRootModules() throws CoreException {
     when(module1.getId()).thenReturn("module1");
 
-    IModule[] rootModules = null;
-    try {
-      rootModules = delegate.getRootModules(module1);
-    } catch (CoreException e) {
-      Assert.fail();
-    }
+    IModule[] rootModules = delegate.getRootModules(module1);
     Assert.assertEquals(1, rootModules.length);
     Assert.assertEquals("module1", rootModules[0].getId());
   }
