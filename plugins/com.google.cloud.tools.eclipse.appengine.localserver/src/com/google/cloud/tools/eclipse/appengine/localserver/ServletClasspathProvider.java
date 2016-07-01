@@ -21,7 +21,7 @@ public class ServletClasspathProvider extends RuntimeClasspathProviderDelegate {
 
   @Override
   public IClasspathEntry[] resolveClasspathContainer(IProject project, IRuntime runtime) {
-    if (MavenUtils.hasMavenNature(project)) { // Maven handles its own classpath
+    if (project != null && MavenUtils.hasMavenNature(project)) { // Maven handles its own classpath
       return new IClasspathEntry[0];
     } else {
       return resolveClasspathContainer(runtime);
