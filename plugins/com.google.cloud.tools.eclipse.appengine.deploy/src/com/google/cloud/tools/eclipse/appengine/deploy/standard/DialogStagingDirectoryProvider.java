@@ -1,10 +1,9 @@
-package com.google.cloud.tools.eclipse.appengine.deploy;
+package com.google.cloud.tools.eclipse.appengine.deploy.standard;
 
-import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.swt.widgets.DirectoryDialog;
-import org.eclipse.ui.handlers.HandlerUtil;
+import org.eclipse.swt.widgets.Shell;
 
-import com.google.common.base.Preconditions;
+import com.google.cloud.tools.eclipse.appengine.deploy.Messages;
 
 /**
  * Prompts the user to select a directory for staging.
@@ -12,11 +11,15 @@ import com.google.common.base.Preconditions;
 // TODO should be moved to separate UI bundle (if kept at all in deploy's final implementation)
 public class DialogStagingDirectoryProvider implements StagingDirectoryProvider {
 
+  private Shell parentShell;
+
+  public DialogStagingDirectoryProvider(Shell shell) {
+    this.parentShell = shell;
+  }
+
   @Override
-  public String getStagingDirectory(ExecutionEvent executionEvent) {
-    Preconditions.checkNotNull(executionEvent, Messages.getString("argument.executionevent.null")); //$NON-NLS-1$
-    
-    DirectoryDialog directoryDialog = new DirectoryDialog(HandlerUtil.getActiveShell(executionEvent));
+  public String getStagingDirectory() {
+    DirectoryDialog directoryDialog = new DirectoryDialog(parentShell);
     directoryDialog.setText(Messages.getString("dialog.staging.directory.provider.title")); //$NON-NLS-1$
     directoryDialog.setMessage(Messages.getString("dialog.staging.directory.provider.message")); //$NON-NLS-1$
     return directoryDialog.open();

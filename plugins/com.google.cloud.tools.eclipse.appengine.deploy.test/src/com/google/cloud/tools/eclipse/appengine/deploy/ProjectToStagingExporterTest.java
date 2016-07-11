@@ -1,11 +1,12 @@
 package com.google.cloud.tools.eclipse.appengine.deploy;
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.junit.Test;
+
+import com.google.cloud.tools.eclipse.appengine.deploy.standard.ProjectToStagingExporter;
 
 public class ProjectToStagingExporterTest {
 
