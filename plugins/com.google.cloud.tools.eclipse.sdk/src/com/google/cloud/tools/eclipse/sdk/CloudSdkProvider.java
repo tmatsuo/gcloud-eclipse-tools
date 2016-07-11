@@ -17,15 +17,12 @@
 package com.google.cloud.tools.eclipse.sdk;
 
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdk;
-import com.google.cloud.tools.appengine.cloudsdk.PathResolver;
 import com.google.cloud.tools.eclipse.sdk.internal.PreferenceConstants;
 import com.google.cloud.tools.eclipse.sdk.internal.PreferenceInitializer;
 
 import org.eclipse.e4.core.contexts.ContextFunction;
 import org.eclipse.jface.preference.IPreferenceStore;
 
-import java.io.File;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 
 /**
@@ -46,7 +43,8 @@ public class CloudSdkProvider extends ContextFunction {
     
     String configuredPath = preferences.getString(PreferenceConstants.CLOUDSDK_PATH);
     
-    // Let's use the configured path, if there is one. Otherwise, the lib will try to discover the path.
+    // Let's use the configured path, if there is one. Otherwise, the lib will try to discover the
+    // path.
     if (configuredPath != null && !configuredPath.isEmpty()) {
     	// TODO(joaomartins): What happens when the provided path is invalid? Tools lib isn't
     	// calling validate().
