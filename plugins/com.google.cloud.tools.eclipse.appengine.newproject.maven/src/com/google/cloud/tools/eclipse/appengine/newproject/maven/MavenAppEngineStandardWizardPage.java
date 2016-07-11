@@ -119,7 +119,6 @@ public class MavenAppEngineStandardWizardPage extends WizardPage implements IWiz
   /** Create UI for specifying desired Maven Coordinates */
   private void createMavenCoordinatesArea(Composite container) {
     ModifyListener pageValidator = new PageValidator();
-    AutoPackageNameSetter autoPackageNameSetter = new AutoPackageNameSetter();
 
     Group mavenCoordinatesGroup = new Group(container, SWT.NONE);
     mavenCoordinatesGroup.setText("Maven project coordinates");
@@ -131,7 +130,7 @@ public class MavenAppEngineStandardWizardPage extends WizardPage implements IWiz
     groupIdField = new Text(mavenCoordinatesGroup, SWT.BORDER);
     GridDataFactory.defaultsFor(groupIdField).align(SWT.FILL, SWT.CENTER).applyTo(groupIdField);
     groupIdField.addModifyListener(pageValidator);
-    groupIdField.addVerifyListener(autoPackageNameSetter);
+    groupIdField.addVerifyListener(new AutoPackageNameSetterOnGroupIdChange());
 
     Label artifactIdLabel = new Label(mavenCoordinatesGroup, SWT.NONE);
     artifactIdLabel.setText("Artifact Id:"); //$NON-NLS-1$
@@ -139,7 +138,7 @@ public class MavenAppEngineStandardWizardPage extends WizardPage implements IWiz
     GridDataFactory.defaultsFor(artifactIdField).align(SWT.FILL, SWT.CENTER)
         .applyTo(artifactIdField);
     artifactIdField.addModifyListener(pageValidator);
-    artifactIdField.addVerifyListener(autoPackageNameSetter);
+    artifactIdField.addVerifyListener(new AutoPackageNameSetterOnArtifactIdChange());
 
     Label versionLabel = new Label(mavenCoordinatesGroup, SWT.NONE);
     versionLabel.setText("Version:"); //$NON-NLS-1$
@@ -334,39 +333,51 @@ public class MavenAppEngineStandardWizardPage extends WizardPage implements IWiz
    * only when 1) javaPackageField is empty; or 2) the field matches previous auto-fill before
    * ID modification.
    */
-  private final class AutoPackageNameSetter implements VerifyListener {
+  private final class AutoPackageNameSetterOnGroupIdChange implements VerifyListener {
     @Override
     public void verifyText(VerifyEvent event) {
-      Text textField = (Text) event.widget;
-      String oldText = textField.getText().trim();
       // Below explains how to get text after modification:
       // http://stackoverflow.com/questions/32872249/get-text-of-swt-text-component-before-modification
-      String newText =
-          oldText.substring(0, event.start) + event.text + oldText.substring(event.end);
+      String newGroupId =
+          getGroupId().substring(0, event.start) + event.text + getGroupId().substring(event.end);
 
-      String oldPackageName;
-      String newPackageName;
-      if (textField == groupIdField) {
-        oldPackageName = suggestPackageName(oldText, getArtifactId());
-        newPackageName = suggestPackageName(newText, getArtifactId());
-      } else {
-        oldPackageName = suggestPackageName(getGroupId(), oldText);
-        newPackageName = suggestPackageName(getGroupId(), newText);
-      }
-
-      if (getPackageName().isEmpty() || getPackageName().equals(oldPackageName)) {
-        javaPackageField.setText(newPackageName);
-      }
+      String oldPackageName = suggestPackageName(getGroupId(), getArtifactId());
+      String newPackageName = suggestPackageName(newGroupId, getArtifactId());
+      AutoSetPackageNameIfNecessary(oldPackageName, newPackageName);
     }
+  }
 
-    /**
-     * Helper function returning a suggested package name based on groupId and artifactId. 
-     */
-    private String suggestPackageName(String groupId, String artifactId) {
-      if (!artifactId.isEmpty()) {
-        return groupId + "." + artifactId;
-      }
-      return groupId;
+  /**
+   * See {@link AutoPackageNameSetterOnGroupIdChange}.
+   */
+  private final class AutoPackageNameSetterOnArtifactIdChange implements VerifyListener {
+    @Override
+    public void verifyText(VerifyEvent event) {
+      String newArtifactId = getArtifactId().substring(0, event.start)
+          + event.text + getArtifactId().substring(event.end);
+
+      String oldPackageName = suggestPackageName(getGroupId(), getArtifactId());
+      String newPackageName = suggestPackageName(getGroupId(), newArtifactId);
+      AutoSetPackageNameIfNecessary(oldPackageName, newPackageName);
     }
+  }
+
+  /**
+   * See {@link AutoPackageNameSetterOnGroupIdChange#verifyText(VerifyEvent)}.
+   */
+  private void AutoSetPackageNameIfNecessary(String oldPackageName, String newPackageName) {
+    if (getPackageName().isEmpty() || getPackageName().equals(oldPackageName)) {
+      javaPackageField.setText(newPackageName);
+    }
+  }
+
+  /**
+   * Helper function returning a suggested package name based on groupId and artifactId.
+   */
+  private static String suggestPackageName(String groupId, String artifactId) {
+    if (!artifactId.isEmpty()) {
+      return groupId + "." + artifactId;
+    }
+    return groupId;
   }
 }
