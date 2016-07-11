@@ -128,6 +128,12 @@ public class MavenAppEngineStandardWizardPage extends WizardPage implements IWiz
     groupIdField = new Text(mavenCoordinatesGroup, SWT.BORDER);
     GridDataFactory.defaultsFor(groupIdField).align(SWT.FILL, SWT.CENTER).applyTo(groupIdField);
     groupIdField.addModifyListener(pageValidator);
+    groupIdField.addModifyListener(new ModifyListener() {
+      @Override
+      public void modifyText(ModifyEvent event) {
+        javaPackageField.setText(groupIdField.getText());
+      }
+    });
 
     Label artifactIdLabel = new Label(mavenCoordinatesGroup, SWT.NONE);
     artifactIdLabel.setText("Artifact Id:"); //$NON-NLS-1$
