@@ -18,6 +18,8 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.VerifyEvent;
+import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -117,6 +119,7 @@ public class MavenAppEngineStandardWizardPage extends WizardPage implements IWiz
   /** Create UI for specifying desired Maven Coordinates */
   private void createMavenCoordinatesArea(Composite container) {
     ModifyListener pageValidator = new PageValidator();
+    AutoPackageNameSetter autoPackageNameSetter = new AutoPackageNameSetter();
 
     Group mavenCoordinatesGroup = new Group(container, SWT.NONE);
     mavenCoordinatesGroup.setText("Maven project coordinates");
@@ -128,12 +131,7 @@ public class MavenAppEngineStandardWizardPage extends WizardPage implements IWiz
     groupIdField = new Text(mavenCoordinatesGroup, SWT.BORDER);
     GridDataFactory.defaultsFor(groupIdField).align(SWT.FILL, SWT.CENTER).applyTo(groupIdField);
     groupIdField.addModifyListener(pageValidator);
-    groupIdField.addModifyListener(new ModifyListener() {
-      @Override
-      public void modifyText(ModifyEvent event) {
-        javaPackageField.setText(groupIdField.getText());
-      }
-    });
+    groupIdField.addVerifyListener(autoPackageNameSetter);
 
     Label artifactIdLabel = new Label(mavenCoordinatesGroup, SWT.NONE);
     artifactIdLabel.setText("Artifact Id:"); //$NON-NLS-1$
@@ -141,6 +139,7 @@ public class MavenAppEngineStandardWizardPage extends WizardPage implements IWiz
     GridDataFactory.defaultsFor(artifactIdField).align(SWT.FILL, SWT.CENTER)
         .applyTo(artifactIdField);
     artifactIdField.addModifyListener(pageValidator);
+    artifactIdField.addVerifyListener(autoPackageNameSetter);
 
     Label versionLabel = new Label(mavenCoordinatesGroup, SWT.NONE);
     versionLabel.setText("Version:"); //$NON-NLS-1$
@@ -156,7 +155,7 @@ public class MavenAppEngineStandardWizardPage extends WizardPage implements IWiz
 
     // Java package name
     Label packageNameLabel = new Label(container, SWT.NONE);
-    packageNameLabel.setText("Java package: (defaults to group ID)");
+    packageNameLabel.setText("Java package:");
     javaPackageField = new Text(container, SWT.BORDER);
     GridData javaPackagePosition = new GridData(GridData.FILL_HORIZONTAL);
     javaPackagePosition.horizontalSpan = 2;
@@ -327,6 +326,45 @@ public class MavenAppEngineStandardWizardPage extends WizardPage implements IWiz
     @Override
     public void modifyText(ModifyEvent event) {
       checkFlipToNext();
+    }
+  }
+
+  /**
+   * Auto-fills javaPackageField as "groupId.artifactId" (or "groupId" if artifactId is empty),
+   * only when 1) javaPackageField is empty; or 2) the field matches previous auto-fill before
+   * ID modification.
+   */
+  private final class AutoPackageNameSetter implements VerifyListener {
+    @Override
+    public void verifyText(VerifyEvent event) {
+      Text textField = (Text) event.widget;
+      String oldText = textField.getText().trim();
+      String newText =
+          oldText.substring(0, event.start) + event.text + oldText.substring(event.end);
+
+      String oldPackageName;
+      String newPackageName;
+      if (textField == groupIdField) {
+        oldPackageName = suggestPackageName(oldText, getArtifactId());
+        newPackageName = suggestPackageName(newText, getArtifactId());
+      } else {
+        oldPackageName = suggestPackageName(getGroupId(), oldText);
+        newPackageName = suggestPackageName(getGroupId(), newText);
+      }
+
+      if (getPackageName().isEmpty() || getPackageName().equals(oldPackageName)) {
+        javaPackageField.setText(newPackageName);
+      }
+    }
+
+    /**
+     * Helper function returning a suggested package name based on groupId and artifactId. 
+     */
+    private String suggestPackageName(String groupId, String artifactId) {
+      if (!artifactId.isEmpty()) {
+        return groupId + "." + artifactId;
+      }
+      return groupId;
     }
   }
 }
