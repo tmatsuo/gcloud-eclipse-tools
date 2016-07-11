@@ -339,6 +339,8 @@ public class MavenAppEngineStandardWizardPage extends WizardPage implements IWiz
     public void verifyText(VerifyEvent event) {
       Text textField = (Text) event.widget;
       String oldText = textField.getText().trim();
+      // Below explains how to get text after modification:
+      // http://stackoverflow.com/questions/32872249/get-text-of-swt-text-component-before-modification
       String newText =
           oldText.substring(0, event.start) + event.text + oldText.substring(event.end);
 
